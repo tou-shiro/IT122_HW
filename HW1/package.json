@@ -1,0 +1,22 @@
+{
+  "name": "it122_hw1",
+  "version": "1.0.0",
+  "description": "demo app for it122 hw1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tou-shiro/IT122_HW.git"
+  },
+  "keywords": [
+    "it122"
+  ],
+  "author": "shiro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tou-shiro/IT122_HW/issues"
+  },
+  "homepage": "https://github.com/tou-shiro/IT122_HW#readme"
+}
