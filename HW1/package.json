@@ -18,5 +18,6 @@
   "bugs": {
     "url": "https://github.com/tou-shiro/IT122_HW/issues"
   },
-  "homepage": "https://github.com/tou-shiro/IT122_HW#readme"
+  "homepage": "https://github.com/tou-shiro/IT122_HW#readme",
+  "type": "module"
 }
