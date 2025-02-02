@@ -1,4 +1,4 @@
-const myShowcase = [
+let Cars = [
     {
       model: "Miata",
       make: "Mazda",
@@ -7,7 +7,7 @@ const myShowcase = [
       mileage: 100000
     },
     {
-      model: "Miata",
+      model: "Miata2",
       make: "Mazda",
       year: 1995,
       color: "black",
@@ -34,5 +34,16 @@ const myShowcase = [
       color: "grey",
       mileage: 100000
     }
-  ];
+  ]
+
+const getAll = () => {
+  return Cars;
+}
+
+const getItem = (model) => {
+  return Cars.find((item) => {
+    return item.model.toLowerCase() === model.toLowerCase();
+  });
+};
   
+export { getAll, getItem }

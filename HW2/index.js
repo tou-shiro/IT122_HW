@@ -1,16 +1,38 @@
 'use strict'
+
+import * as Cars from "./data.js";
 import express from 'express';
 
 const app = express();
+
 app.set('port', process.env.PORT || 3000);
 app.use(express.static('./public')); // set location for static files
 app.use(express.urlencoded()); //Parse URL-encoded bodies
 
-// send static file as response
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+
+// send content of 'home' view to browser
 app.get('/', (req,res) => {
-    res.type('text/html');
-    res.sendFile('.public/index.html');
-  });
+  res.render('home', {cars: Cars.getAll()});
+});
+
+// send content of 'home' view
+app.get('/detail', (req,res) => {
+ // let result = Cars.getItem(model);
+  let result = Cars.getItem(req.query.model);
+  res.render('details', {
+    model: req.query.model, 
+ //   model: model,
+    result: result }
+  );
+ });
+
+// send static file as response
+//app.get('/', (req,res) => {
+//    res.type('text/html');
+//    res.sendFile('.public/index.html');
+ // });
   
   // send plain text response
   app.get('/about', (req,res) => {
@@ -21,9 +43,16 @@ app.get('/', (req,res) => {
 
   app.get('/user/:name', (req,res) => {
     res.type('text/plain');
-    res.send(`Your name is ${req.params.name}`);
+    res.send(`Your name name is ${req.params.name}`);
   });
   
+  app.get('/foo', (req,res,next) => {
+    if(Math.random() < 0.5) return next();
+    res.send('sometimes this');
+  });
+  app.get('/foo', (req,res) => {
+    res.send('and sometimes that');
+  });
 
   // define 404 handler
   app.use((req,res) => {
