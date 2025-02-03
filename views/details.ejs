@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= model %> Details</title>
+</head>
+<body>
+  <a href="/">Home</a>
+
+  <h1>Details Page</h1>
+
+  <% if (result) { %>
+    <h2><%= model %> Details</h2>
+    <ul>
+      <li>Make: <%= result.make %></li>
+      <li>Year: <%= result.year %></li>
+      <li>Color: <%= result.color %></li>
+      <li>Mileage: <%= result.mileage %></li>
+    </ul>
+  <% } else { %>
+    <p>Car model not found</p>
+  <% } %>
+</body>
+</html>
