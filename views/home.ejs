@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT122 Project</title>
+	<link href="/css/style.css" type="text/css" rel="stylesheet">
+</head>
 
 <body>
-<h1>IT122 HW2</h1>
+  <header>
+    <h1>IT122 HW2</h1>
 
-<h2>Cars</h2>
+    <h2>Cars</h2>
+  </header>
 
-  <% cars.forEach(function(car) { %>
-    <li><a href="/detail?model=<%= car.model %>"> <%= car.model %> </a></li>
-  <% }); %>
-
+  <main>
+    <ul>
+      <% cars.forEach(function(car) { %>
+        <li><a href="/detail?model=<%= car.model %>"> <%= car.model %> </a></li>
+      <% }); %>
+    </ul>
+  </main>
 
 </body>
 </html>

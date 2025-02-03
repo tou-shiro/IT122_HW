@@ -1,12 +1,13 @@
 'use strict'
 
-import * as Cars from "./data.js";
+import * as Cars from "./data/data.js";
 import express from 'express';
 
 const app = express();
 
 app.set('port', process.env.PORT || 3000);
-app.use(express.static('./public')); // set location for static files
+//app.use(express.static('./public')); // set location for static files
+app.use(express.static('public')); // set location for static files
 app.use(express.urlencoded()); //Parse URL-encoded bodies
 
 // set the view engine to ejs
