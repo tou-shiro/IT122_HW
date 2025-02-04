@@ -1,8 +1,10 @@
 'use strict'
 
+import { createSecureContext } from "tls";
 import * as Cars from "./data/data.js";
-// import { Car } from './models/Car.js'; // for HW3
+import { Car } from './models/Car.js'; // for HW3
 import express from 'express';
+import { resourceLimits } from "worker_threads";
 
 const app = express();
 
@@ -16,19 +18,37 @@ app.set('view engine', 'ejs');
 
 // send content of 'home' view to browser
 app.get('/', (req,res) => {
-  res.render('home', {cars: Cars.getAll()});
+//  res.render('home', {cars: Cars.getAll()});
+Car.find({}).lean()
+  .then((cars) => {
+  //  console.log(cars);
+    res.render('home', {cars});
+  })
+  .catch(err => console.log(err));
 });
 
+
+
 // send content of 'home' view
-app.get('/detail', (req,res) => {
+//app.get('/detail', (req,res) => {
  // let result = Cars.getItem(model);
-  let result = Cars.getItem(req.query.model);
-  res.render('details', {
-    model: req.query.model, 
+ // let result = Cars.getItem(req.query.model);
+ // res.render('details', {
+ //   model: req.query.model, 
  //   model: model,
-    result: result }
-  );
- });
+ //   result: result }
+ // );
+ //});
+
+ app.get('/detail', (req,res,next) => {
+  // db query can use request parameters
+  Car.findOne({ model:req.query.model }).lean()
+      .then((car) => {
+//            console.log(car);
+          res.render('details', {result: car} );
+      })
+      .catch(err => next(err));
+});
 
 // send static file as response
 //app.get('/', (req,res) => {
