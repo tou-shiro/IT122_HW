@@ -1,7 +1,7 @@
 {
-  "name": "it122_hw",
+  "name": "it122_hw1",
   "version": "1.0.0",
-  "description": "demo app for it122",
+  "description": "demo app for it122 hw1",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,9 +19,5 @@
     "url": "https://github.com/tou-shiro/IT122_HW/issues"
   },
   "homepage": "https://github.com/tou-shiro/IT122_HW#readme",
-  "dependencies": {
-    "ejs": "^3.1.10",
-    "express": "^4.21.2",
-    "mongoose": "^8.9.7"
-  }
+  "type": "module"
 }
