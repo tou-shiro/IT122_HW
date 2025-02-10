@@ -2,7 +2,7 @@
   "name": "it122_hw",
   "version": "1.0.0",
   "description": "demo app for it122",
-  "main": "index.js", 
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/tou-shiro/IT122_HW#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongoose": "^8.9.7"

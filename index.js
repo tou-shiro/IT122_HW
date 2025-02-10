@@ -1,12 +1,13 @@
 'use strict'
 
-
 import * as Cars from "./data/data.js";
 import { Car } from './models/Car.js'; // for HW3
 import express from 'express';
-
+import cors from 'cors';
 
 const app = express();
+
+app.use('/api', cors()); // set Access-Control-Allow-Origin header for api route
 
 app.set('port', process.env.PORT || 3000);
 //app.use(express.static('./public')); // set location for static files
@@ -27,6 +28,16 @@ Car.find({}).lean()
   .catch(err => console.log(err));
 });
 
+app.get('/api/cars', (req,res) => {
+  Car.find({}).lean()
+    .then((cars) => {
+      res.json(cars);
+      //console.log(cars);
+      //res.render('home', {cars});
+    })
+    .catch(err => {res.status(500).send('Database Error occurred');
+    })
+});
 
 
 // send content of 'home' view
@@ -48,6 +59,21 @@ Car.find({}).lean()
           res.render('details', {result: car} );
       })
       .catch(err => next(err));
+});
+
+// e.g. http://localhost:3000/api/cars/miata
+app.get('/api/cars/:model', (req,res) => {
+  const model = req.params.model;
+//app.get('/api/cars/:color', (req,res) => {
+//Car.findOne({ model:req.params.model }).lean()
+Car.find({ model: { $regex: `^${model}$`, $options: 'i' } })  //MongoDB native approach
+//Car.find({ model: new RegExp(`^${model}$`, 'i') })  //JavaScript RegExp Construtor
+      .then((car) => {
+         res.json(car);
+      })
+      .catch(err => {
+          res.status(500).send('Database Error occurred');
+      });
 });
 
 // send static file as response
