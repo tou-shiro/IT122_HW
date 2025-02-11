@@ -66,8 +66,8 @@ app.get('/api/cars/:model', (req,res) => {
   const model = req.params.model;
 //app.get('/api/cars/:color', (req,res) => {
 //Car.findOne({ model:req.params.model }).lean()
-Car.find({ model: { $regex: `^${model}$`, $options: 'i' } })  //MongoDB native approach
-//Car.find({ model: new RegExp(`^${model}$`, 'i') })  //JavaScript RegExp Construtor
+//Car.find({ model: { $regex: `^${model}$`, $options: 'i' } })  //MongoDB native approach
+Car.find({ model: new RegExp(`^${model}$`, 'i') })  //JavaScript RegExp Construtor
       .then((car) => {
          res.json(car);
       })
