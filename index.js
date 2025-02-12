@@ -8,6 +8,7 @@ import cors from 'cors';
 const app = express();
 
 app.use('/api', cors()); // set Access-Control-Allow-Origin header for api route
+app.use(express.json());
 
 app.set('port', process.env.PORT || 3000);
 //app.use(express.static('./public')); // set location for static files
@@ -28,16 +29,7 @@ Car.find({}).lean()
   .catch(err => console.log(err));
 });
 
-app.get('/api/cars', (req,res) => {
-  Car.find({}).lean()
-    .then((cars) => {
-      res.json(cars);
-      //console.log(cars);
-      //res.render('home', {cars});
-    })
-    .catch(err => {res.status(500).send('Database Error occurred');
-    })
-});
+
 
 
 // send content of 'home' view
@@ -61,19 +53,103 @@ app.get('/api/cars', (req,res) => {
       .catch(err => next(err));
 });
 
+app.get('/api/cars', (req,res) => {
+  Car.find({}).lean()
+    .then((cars) => {
+      res.json(cars);
+      //console.log(cars);
+      //res.render('home', {cars});
+    })
+    .catch(err => {
+      res.status(500).send('Database Error occurred');
+    })
+});
+
 // e.g. http://localhost:3000/api/cars/miata
 app.get('/api/cars/:model', (req,res) => {
   const model = req.params.model;
+// const search_pattern = new RegExp(search_term,"i");
+// Book.find({"title": {$regex : search_pattern} }).lean()
 //app.get('/api/cars/:color', (req,res) => {
 //Car.findOne({ model:req.params.model }).lean()
 //Car.find({ model: { $regex: `^${model}$`, $options: 'i' } })  //MongoDB native approach
-Car.find({ model: new RegExp(`^${model}$`, 'i') })  //JavaScript RegExp Construtor
+  Car.find({ model: new RegExp(`^${model}$`, 'i') })  //JavaScript RegExp Construtor
       .then((car) => {
          res.json(car);
       })
       .catch(err => {
-          res.status(500).send('Database Error occurred');
+          res.status(500).send({ message: 'Database Error occurred'});
       });
+});
+
+app.delete('/api/cars/delete/:model', (req,res,next) => {
+  const model = req.params.model;
+  Car.deleteOne({ model: new RegExp(`^${model}$`, 'i') })
+    .then((result) => {
+      //console.log(result);
+      if (result.deletedCount === 1) {
+        res.status(200).send({ message: 'deleted successfully' });
+      } else {
+       // res.status(404).json({ message: 'not found' });
+        res.status(404).send({ message: 'not found' });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({ message: 'Database Error occurred'});
+  });
+});
+
+app.post('/api/cars/add', (req,res,next) => {
+  const { model, make, year, color, mileage } = req.body
+
+  const newCar = new Car({
+    model, 
+    make, 
+    year, 
+    color, 
+    mileage,
+  });
+  //console.log(newCar);
+
+  newCar.save()
+      .then((result) => {
+        //console.log(result);
+        res.status(201).send({message: 'added'});
+    })
+    .catch((err) => {
+     // console.log(result);
+      res.status(500).send({ message: 'Database Error occurred' });
+    });
+  });
+
+
+  app.post('/api/cars/update/:model', (req,res,next) => {
+    const reqModel = req.params.model;
+    const { model, make, year, color, mileage } = req.body
+  
+    const newCar = new Car({
+      model, 
+      make, 
+      year, 
+      color, 
+      mileage,
+    });
+    //console.log(newCar);
+  
+    Car.deleteOne({ model: new RegExp(`^${reqModel}$`, 'i') })
+    .then((result) => {
+      //console.log(result);
+      if (result.deletedCount === 1) {
+        //res.status(200).send({ message: 'deleted successfully' });
+        return newCar.save();
+      } else {
+       // res.status(404).json({ message: 'not found' });
+        res.status(404).send({ message: 'not found' });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({ message: 'Database Error occurred'});
+  });
 });
 
 // send static file as response
