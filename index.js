@@ -99,58 +99,25 @@ app.delete('/api/cars/delete/:model', (req,res,next) => {
   });
 });
 
-app.post('/api/cars/add', (req,res,next) => {
-  const { model, make, year, color, mileage } = req.body
 
-  const newCar = new Car({
-    model, 
-    make, 
-    year, 
-    color, 
-    mileage,
-  });
-  //console.log(newCar);
 
-  newCar.save()
-      .then((result) => {
-        //console.log(result);
-        res.status(201).send({message: 'added'});
+  app.post('/api/cars/add', (req,res,next) => {
+
+    // insert or update a single record
+    Car.updateOne({ model: new RegExp(`^${req.body.model}$`, 'i') }, req.body, {upsert:true})
+    .then(result => {
+        console.log(result)
+        if (result.modifiedCount > 0) {
+            res.status(201).send({message: 'updated'});
+        } else {
+            res.status(201).send({message: 'added'});
+        }
     })
-    .catch((err) => {
-     // console.log(result);
-      res.status(500).send({ message: 'Database Error occurred' });
-    });
-  });
+    .catch(err => console.log(err));
 
-
-  app.post('/api/cars/update/:model', (req,res,next) => {
-    const reqModel = req.params.model;
-    const { model, make, year, color, mileage } = req.body
-  
-    const newCar = new Car({
-      model, 
-      make, 
-      year, 
-      color, 
-      mileage,
-    });
-    //console.log(newCar);
-  
-    Car.deleteOne({ model: new RegExp(`^${reqModel}$`, 'i') })
-    .then((result) => {
-      //console.log(result);
-      if (result.deletedCount === 1) {
-        //res.status(200).send({ message: 'deleted successfully' });
-        return newCar.save();
-      } else {
-       // res.status(404).json({ message: 'not found' });
-        res.status(404).send({ message: 'not found' });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({ message: 'Database Error occurred'});
-  });
 });
+
+ 
 
 // send static file as response
 //app.get('/', (req,res) => {
