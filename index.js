@@ -5,6 +5,7 @@ import { Car } from './models/Car.js'; // for HW3
 import express from 'express';
 import cors from 'cors';
 
+
 const app = express();
 
 app.use('/api', cors()); // set Access-Control-Allow-Origin header for api route
@@ -24,7 +25,10 @@ app.get('/', (req,res) => {
 Car.find({}).lean()
   .then((cars) => {
   //  console.log(cars);
-    res.render('home', {cars});
+    // res.render('home', {cars});  << original
+    // pass items data array to home-page template 
+//res.render('home', {items: JSON.stringify(items)});
+    res.render('home_react', {cars: JSON.stringify(cars)});
   })
   .catch(err => console.log(err));
 });
