@@ -4,6 +4,7 @@ import * as Cars from "./data/data.js";
 import { Car } from './models/Car.js'; // for HW3
 import express from 'express';
 import cors from 'cors';
+//import { useState, useEffect } from 'react';
 
 
 const app = express();
@@ -28,7 +29,7 @@ Car.find({}).lean()
     // res.render('home', {cars});  << original
     // pass items data array to home-page template 
 //res.render('home', {items: JSON.stringify(items)});
-    res.render('home_react', {cars: JSON.stringify(cars)});
+    res.render('home', {cars: JSON.stringify(cars)});
   })
   .catch(err => console.log(err));
 });
@@ -47,7 +48,7 @@ Car.find({}).lean()
  // );
  //});
 
- app.get('/detail', (req,res,next) => {
+ app.get('/details', (req,res,next) => {
   // db query can use request parameters
   Car.findOne({ model:req.query.model }).lean()
       .then((car) => {

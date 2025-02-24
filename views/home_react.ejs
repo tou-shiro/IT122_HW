@@ -15,17 +15,17 @@
 <script type="text/babel">
 
     const items = <%- cars %>;
-    console.log(items)
+   // console.log(items)
 
     // define other components
 
-    const names = ["dave", "sue", "keisha", "darrell"];
-const listItems = items.map((item) =>  <li key={item.model}><a href={"/detail?model="+item.model} >{item.model}</a></li>);
+   // const names = ["dave", "sue", "keisha", "darrell"];
+const listItems = items.map((item) =>  <li key={item.model}><a href={"/details?model="+item.model} >{item.model}</a></li>);
 
 
     const App = () => {
       return <div>
-        <h2>Show components here</h2>
+        <h2>IT122 JavaScript + React Project</h2>
 
         <ul> {listItems}</ul>
     </div>;

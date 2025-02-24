@@ -1,26 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT122 Project</title>
-	<link href="/css/style.css" type="text/css" rel="stylesheet">
+    <title>React App Demo</title>
+
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Don't use this in production: -->
+    <!-- vite?  build too? -->
 </head>
 
 <body>
-  <header>
-    <h1>IT122 JavaScript + Express Project</h1>
 
-    <h2>Cars</h2>
-  </header>
+<div id="root"></div>
+<script type="text/babel">
 
-  <main>
-    <ul>
-      <% cars.forEach(function(car) { %>
-        <li><a href="/detail?model=<%= car.model %>"> <%= car.model %> </a></li>
-      <% }); %>
-    </ul>
-  </main>
+    //const items = <%- cars %>;
+    //const items = <%- JSON.stringify(cars) %>;
+    const items = JSON.parse(<%- JSON.stringify(cars) %>);
 
+
+    console.log(items);
+
+    const ListItems = (props) => {
+        console.log(props.items);
+      const listItems = props.items.map((item) =>  (
+        <li key={item.model} onClick={props.clickHandler}>
+            {item.model}
+        </li>
+      ));
+      return  <ul> {listItems}</ul>;
+    };
+
+    const Detail = (props) => {
+        return (
+            <div>
+            <h3>Car Details</h3>
+            { props.item &&
+              <form>
+                <b>Model</b>: <input type="text" name="model" value={props.item.model || ""} onChange={props.changeHandler} /><br/>
+                <b>Make</b>: <input type="text" name="make" value={props.item.make ||  ""} onChange={props.changeHandler} /><br/>
+                <b>Year</b>: <input type="text" name="year" value={props.item.year || ""} onChange={props.changeHandler} /><br/>
+                <b>Color</b>: <input type="text" name="color" value={props.item.color || ""} onChange={props.changeHandler} /><br/>
+                <button type="button" onClick={props.clearHandler}>Clear</button> 
+              </form>
+            }
+            </div>
+        )
+    };
+
+    const App = () => {
+
+        const [selectedItem, setSelectedItem] = React.useState();
+        const [originalItem, setOriginalItem] = React.useState();
+
+        const itemClicked = (e) => {
+            console.log('item clicked');
+            console.log(e.target.innerText);
+
+            let found = items.find(item => { return item.model == e.target.innerText});
+            console.log(found)
+            setSelectedItem(found);
+            setOriginalItem({ ...found });
+        };
+
+        const itemChanged = (e) => {
+            let field = e.target.name;
+            let newItem = { ...selectedItem };
+            newItem[field] = e.target.value;
+            console.log(newItem)
+            setSelectedItem(newItem);
+        };
+
+        const clearItem = () => {
+            setSelectedItem({ ...originalItem });
+        };
+
+      return (
+      <div>
+        <h2>IT122 JavaScript + React Project</h2>
+
+        <ListItems items={items} clickHandler={itemClicked} />
+        {/* new components */}
+        <hr />
+        <Detail item={selectedItem} changeHandler={itemChanged} clearHandler={clearItem}/>
+       </div>
+        );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+</script>
 </body>
 </html>
