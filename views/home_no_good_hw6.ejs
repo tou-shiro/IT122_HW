@@ -18,13 +18,17 @@
 
     //const items = <%- cars %>;
     //const items = <%- JSON.stringify(cars) %>;
+    //const items = JSON.parse(<%- JSON.stringify(cars) %>);
     const items = JSON.parse(<%- JSON.stringify(cars) %>);
 
 
+    console.log("items got from db");
+    console.log(items);
+
     const ListItems = (props) => {
-        console.log("props");
+        console.log("props.items");
         console.log(props.items);
-      const listItems = props.items && props.items.map((item) =>  (
+      const listItems = props.items.map((item) =>  (
         <li key={item.model} onClick={props.clickHandler}>
             {item.model}
         </li>
@@ -42,9 +46,7 @@
                 <b>Make</b>: <input type="text" name="make" value={props.item.make ||  ""} onChange={props.changeHandler} /><br/>
                 <b>Year</b>: <input type="text" name="year" value={props.item.year || ""} onChange={props.changeHandler} /><br/>
                 <b>Color</b>: <input type="text" name="color" value={props.item.color || ""} onChange={props.changeHandler} /><br/>
-                <button type="button" onClick={props.clearHandler}>Clear</button>
-                <button type="button" onClick={props.saveHandler}>Save</button> 
-                <button type="button" onClick={props.deleteHandler}>Delete</button> 
+                <button type="button" onClick={props.clearHandler}>Clear</button> 
               </form>
             }
             </div>
@@ -53,30 +55,16 @@
 
     const App = () => {
 
-        const [selectedItem, setSelectedItem] = React.useState();
-       // const [originalItem, setOriginalItem] = React.useState();
-        const [items, setItems] = React.useState([]);
-
-    React.useEffect(() => {
-      // fetch data
-      const fetchData = async()=> {
-        fetch("/api/cars").then(res => res.json())
-          .then((json) => {
-          setItems(json);
-          //const data = await getData();
-          //setSelectedItem(json); 
-      })
-    }
-      fetchData()
-    }, []);
-  
-
+        const [selectedItem, setSelectedItem] = React.useState(null);
+        const [items, setItems] = React.useState(items);
 
         const itemClicked = (e) => {
             console.log('item clicked');
             console.log(e.target.innerText);
-            let found = items.find(item => { return item.model == e.target.innerText});
-            console.log("found")
+
+            //let found = items.find(item => { return item.model == e.target.innerText});
+            const found = items.find(item => item.model === e.target.innerText);
+
             console.log(found)
             setSelectedItem(found);
             //setOriginalItem({ ...found });
@@ -84,53 +72,40 @@
 
         const itemChanged = (e) => {
             let field = e.target.name;
-            let newItem = { ...selectedItem };
-            newItem[field] = e.target.value;
+            //let newItem = { ...selectedItem };
+            //newItem[field] = e.target.value;
+            const newItem = { ...selectedItem, [field]: e.target.value };
+            console.log("newItem");
+            console.log(newItem);
+
+            //const updatedItems = [...items];
+            //map
             setSelectedItem(newItem);
-            console.log("item changed new item");
-            console.log(newItem);
-            //setItems(items.push(newItem));
-            //setItems([...items, newItem]);
+
+
             const updatedItems = items.map(item => item.model === newItem.model ? newItem : item);
-            console.log("updated Items");
-            console.log(updatedItems);
             setItems(updatedItems);
-            console.log("Items after updateditems");
-            console.log(items);
-           
-            console.log("new item pushed");
-            console.log(newItem);
-        };
+
+            //updatedItems.push(newItem);
+            //setSelectedItem(newItem);
+            //setItems([...items, newItem]);
+            //setItems(items.push(newItem));
+
+            //setItems(updatedItems);
+          //  setSelectedItem(newItem);
+
+            //);
+
+            //setItems(updatedItems);
+           // setSelectedItem(newItem);
+
+      };
 
         const clearItem = () => {
         //    setSelectedItem({ ...originalItem });
         // i misunderstood...  clear means clears the text fields...
-        setSelectedItem({  });
+        setSelectedItem(null);
         };
-
-        const saveItem = () => {
-          if (!selectedItem.title) {
-            return;
-          }
-          fetch("/api/add", {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(selectedItem)
-          })
-          .then(res => res.json())
-          .then((data) => {
-            //if (!selectedItem._id) {
-              //selectedItem._id = data._id;
-              setSelectedItem(data);
-              //let newItem = [...items, data];
-              console.log("newItem");
-              console.log(data);
-              //let newItem = { ...selectedItem, _id: data._id };
-              //newItem.push(selectedItem);
-              //setSelectedItem(newItem);
-            })
-          }
-      
 
       return (
       <div>
