@@ -29,7 +29,7 @@ Car.find({}).lean()
     // res.render('home', {cars});  << original
     // pass items data array to home-page template 
 //res.render('home', {items: JSON.stringify(items)});
-    res.render('home_for_hw6', {cars: JSON.stringify(cars)});
+    res.render('home', {cars: JSON.stringify(cars)});
   })
   .catch(err => console.log(err));
 });

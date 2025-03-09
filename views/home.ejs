@@ -42,6 +42,7 @@
                 <b>Make</b>: <input type="text" name="make" value={props.item.make ||  ""} onChange={props.changeHandler} /><br/>
                 <b>Year</b>: <input type="text" name="year" value={props.item.year || ""} onChange={props.changeHandler} /><br/>
                 <b>Color</b>: <input type="text" name="color" value={props.item.color || ""} onChange={props.changeHandler} /><br/>
+                <b>Mileage</b>: <input type="text" name="mileage" value={props.item.mileage || ""} onChange={props.changeHandler} /><br/>
                 <button type="button" onClick={props.clearHandler}>Clear</button>
                 <button type="button" onClick={props.saveHandler}>Save</button> 
                 <button type="button" onClick={props.deleteHandler}>Delete</button> 
@@ -63,6 +64,7 @@
         fetch("/api/cars").then(res => res.json())
           .then((json) => {
           setItems(json);
+          console.log("Items after update:", items);
           //const data = await getData();
           //setSelectedItem(json); 
       })
@@ -98,7 +100,7 @@
             console.log("Items after updateditems");
             console.log(items);
            
-            console.log("new item pushed");
+            console.log("new item:");
             console.log(newItem);
         };
 
@@ -109,27 +111,66 @@
         };
 
         const saveItem = () => {
-          if (!selectedItem.title) {
+          if (!selectedItem.model) {
             return;
           }
-          fetch("/api/add", {
+
+          const itemToSave = { ...selectedItem };
+          delete itemToSave._id;
+
+          fetch("/api/cars/add", {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(selectedItem)
           })
           .then(res => res.json())
           .then((data) => {
-            //if (!selectedItem._id) {
-              //selectedItem._id = data._id;
-              setSelectedItem(data);
-              //let newItem = [...items, data];
-              console.log("newItem");
-              console.log(data);
+
+            if (!selectedItem._id) {
+              selectedItem._id = data._id;
+              //let updatedItem= { ...selectedItem, _id: data._id };
+              setSelectedItem(selectedItem);
+
+              let newItems = [...items, selectedItem];
+              //newItems.push(selectedItem)
+              setItems(newItems); 
+              // console.log("prevItems");
+              // console.log(data);
+              // setSelectedItem(data);
+              //
+              // console.log("newItem");
+              // console.log(data);
               //let newItem = { ...selectedItem, _id: data._id };
-              //newItem.push(selectedItem);
-              //setSelectedItem(newItem);
-            })
+              //
+            }
+          })
+          .catch(err => console.log('Error saving item:', err));
+        };
+
+        
+        const deleteItem = () => {
+          const id = selectedItem._id;
+          console.log(`Deleting car with id: /api/cars/delete/${id}`);
+          if (!id) {
+            alert("No car selected to delete!");
+            return;
           }
+
+          //delete item from DB
+          fetch(`/api/cars/delete/${id}`, { method: "DELETE" })
+          .then(res => res.json())
+          .then((data) => {
+            //remove item from UI list
+            // const newItems = items.filter((item) => {
+            //   return item._id !== id;
+            // });
+            //setItems(newItems);
+            setItems(items.filter(item => item._id !== id));
+            //clear form
+            setSelectedItem({});
+          })
+          .catch(err => alert("Failed to delete"));
+        }
       
 
       return (
@@ -144,6 +185,7 @@
           changeHandler={itemChanged} 
           clearHandler={clearItem}
           saveHandler={saveItem}
+          deleteHandler={deleteItem}
           />
        </div>
         );
